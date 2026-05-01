@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mini-llama"
+version = "0.0.1"
+description = "Minimal-from-scratch LLaMA with MHA/MQA/GQA/MLA attention variants"
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.1.0",
+  "numpy>=1.24.0",
+  "einops>=0.7.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4.0", "matplotlib>=3.7.0", "tqdm>=4.65.0"]
+
+[tool.setuptools.packages.find]
+include = ["mini_llama*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v -s"

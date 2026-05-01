@@ -1,0 +1,61 @@
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 模型权重 / 大文件 / 数据
+*.pt
+*.bin
+*.safetensors
+*.gguf
+*.ckpt
+*.pth
+*.onnx
+data/
+checkpoints/
+models/
+weights/
+
+# 实验中间产物（如想保留博客素材，注释掉）
+*.log
+results.jsonl
+
+# 环境变量 / 密钥（绝对不要提交）
+.env
+.env.*
+*.key
+*.pem
+secrets/
+
+# CUDA 编译产物
+*.o
+*.exe
+*.out
+vector_add
+tiled_matmul
+*_kernel
