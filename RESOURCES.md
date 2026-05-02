@@ -4,20 +4,51 @@
 
 ---
 
+## 收录与排序原则（v2 优中选优）
+
+> 之所以做这次整改：第一版资料是"广撒网"，不少二手转载和缺乏作者背景的文章混在里面。研究类学习不能这样。
+
+**采纳标准**：
+
+1. **作者可考据** —— 公司/职位/历史一致性，非匿名号
+2. **时效性** —— 内容近 12 个月仍准确（被新模型推翻的旧文降级或剔除）
+3. **评论区质量** —— 无重大未回应技术质疑
+4. **优先含**公式推导 / 源码引用 / 复现实验，避免纯翻译型
+5. **每条都标注** `[作者背景, 平台 YYYY.MM]`，让你自评权威度和时效
+
+**星级**：
+
+- ⭐⭐⭐ 必读（强烈推荐）
+- ⭐⭐ 推荐（认真读完）
+- ⭐ 选读（按需）
+
+**新增条目时请遵守同样规则**。如果不确定一篇文章是否合格，宁缺毋滥。
+
+---
+
 ## 1. Transformer / Attention 基础（M1 用）
 
 ### 注意力变体（MHA → MQA → GQA → MLA → DSA → CSA+HCA）
 
-- 📝 苏剑林《缓存与效果的极限拉扯：从 MHA、MQA、GQA 到 MLA》— [科学空间](https://kexue.fm/archives/10091)
-- 📝 Yue Shui《Transformer 注意力机制：MHA、MQA 与 GQA 的对比》— [syhya.github.io](https://syhya.github.io/zh/posts/2025-01-16-group-query-attention/)
-- 📝 冷眸《Attention 各种变体》— [lengm.cn](https://lengm.cn/post/20250226_attention/)
-- 📝 腾讯云《MHA/MQA/GQA/MLA 对比分析》— [cloud.tencent.com](https://cloud.tencent.com/developer/article/2634499)
-- 📝 U 深研《国内大模型厂商混合注意力机制》— [unifuncs.com](https://unifuncs.com/s/iCwQrYUv)
+#### 苏剑林系列（**必读，按时间顺序**）
+
+- ⭐⭐⭐ 苏剑林《缓存与效果的极限拉扯：从 MHA、MQA、GQA 到 MLA》— [追一科技算法研究员 / kexue.fm 2024.5](https://kexue.fm/archives/10091) — 中文圈最权威的 attention 演进综述
+- ⭐⭐⭐ 苏剑林《Transformer 升级之路：20、MLA 好在哪里？(上)》— [kexue.fm 2025.5](https://kexue.fm/archives/10907) — **必加**！这是上一篇的续作，作者本人和 DeepSeek 团队讨论过 MLA。新论点："MLA 本质是 NoPE 的 MHA，训练时 head_dims=192，decode 时变 MQA-512"
+
+#### zartbot 系列（**国内一线推理工程师，DeepSeek 团队认证过**）
+
+- ⭐⭐ zartbot《从 MHA 到 MLA 看 Attention 优化》— [微信公众号 2024.5](https://mp.weixin.qq.com/s/l2uUXGQ-8Rj_nI3JG5lZ_g) — 从代数视角看 MLA 的低秩分解
+- ⭐⭐ zartbot《继续谈谈 MLA 以及 DeepSeek-MoE 和 SnowFlake Dense-MoE》— [微信公众号 2024.5](https://mp.weixin.qq.com/s/hI7q4_-ZMtFIQ-ckhM9_YQ) — 配 SnowFlake Dense-MoE 对比，参数量分析（MLA 的 KV 参数量仅为 MHA 的 11%）
+- ⭐⭐ zartbot《详细谈谈 DeepSeek MoE 相关的技术发展》— [微信公众号 2025.2](https://mp.weixin.qq.com/s/WFJxnTF9fGIIXPA7GQ5V2w) — 文中明确说"得到了 DeepSeek 团队同学的指正"，权威性强
+
+#### 综述
+
+- ⭐⭐ Yue Shui《Transformer 注意力机制：MHA、MQA 与 GQA 的对比》— [syhya.github.io 2025.1](https://syhya.github.io/zh/posts/2025-01-16-group-query-attention/) — 配公式 + 图，适合跟着推导
 
 ### 源码仓库（顺序读）
 
-1. `karpathy/nanoGPT` — 500 行 GPT-2 复现
-2. `meta-llama/llama` — `model.py` 中的 GQA 实现
+1. `karpathy/nanoGPT` — 500 行 GPT-2 复现，标杆教学代码
+2. `meta-llama/llama` — `model.py` 中的 GQA + RoPE 实现
 3. `deepseek-ai/DeepSeek-V3` — `model.py` 中的 MLA 实现
 4. `deepseek-ai/DeepSeek-V3.2-Exp` — DSA Lightning Indexer
 5. `QwenLM/Qwen3` — Gated DeltaNet 混合实现
@@ -25,184 +56,248 @@
 ### 视频（B 站）
 
 - 李宏毅《生成式 AI 导论》Transformer 章节（中文，自带字幕）
-- 搜 "Transformer 详解 李沐"
-- 搜 "MLA DeepSeek 详解"
+- 李沐《动手学深度学习》Transformer 章节
+- 王树森《Transformer 模型》系列
 
 ---
 
 ## 2. GPU 编程：CUDA + Triton（M2 用）
 
-### CUDA
+### CUDA 入门
 
-- 📚 教材：**Programming Massively Parallel Processors (PMPP) 第 4 版**
-- 📦 中文笔记 + 38 Exercise：[smarterhhsu/PMPP-Learning](https://github.com/smarterhhsu/PMPP-Learning)
-- 📝 PMPP 导读：[smarter.xin PMPP 导读](https://smarter.xin/posts/30730973/)
-- 📦 国内 CUDA 学习圣地：[BBuf/how-to-optim-algorithm-in-cuda](https://github.com/BBuf/how-to-optim-algorithm-in-cuda)
-- 🎥 视频：B 站搜 "CUDA-MODE 课程笔记"（GPU MODE 课程中文版）
+- ⭐⭐⭐ **PMPP 第 4 版**（Programming Massively Parallel Processors）— 教材
+- ⭐⭐⭐ 李理《PMPP 第四版》中文翻译 — [fancyerii.github.io 2024.2](https://fancyerii.github.io/2024/02/20/pmpp/) — **网上最完整的 PMPP 中文版**，覆盖 22 章
+- ⭐⭐⭐ smarterhhsu/PMPP-Learning — [GitHub](https://github.com/smarterhhsu/PMPP-Learning) — 38 个 Exercise CUDA 实现 + 中文笔记
+- ⭐⭐ Smarter《PMPP 导读》— [smarter.xin 2024](https://smarter.xin/posts/30730973/) — 学习路线 + 各章概览
+
+### CUDA 实战 / 高阶
+
+- ⭐⭐⭐ BBuf [`how-to-optim-algorithm-in-cuda`](https://github.com/BBuf/how-to-optim-algorithm-in-cuda) — [OneFlow 工程师维护的 GitHub 仓库] — 国内 CUDA/MLSys 学习圣地
+- ⭐⭐⭐ BBuf [`RESOURCES.md`](https://github.com/BBuf/how-to-optim-algorithm-in-cuda/blob/master/RESOURCES.md) — 这一份本身就是国内 CUDA/Triton/MLSys 资源最全索引，**直接挂这个链接，让你能继续向下挖**
+- ⭐⭐ CUDA-MODE 课程笔记系列（B 站搜 "CUDA-MODE 课程笔记"）— BBuf 等人翻译的 GPU MODE 课程
 
 ### Triton
 
-- 📝 [BBuf · OpenAI Triton 入门笔记三 FusedAttention](https://cloud.tencent.com/developer/article/2392140)
-- 📝 [AI-HPC 联盟 · Triton 学习路径](https://ai-hpc.org/guide/08-compiler/triton-learning-path)
-- 📝 [SegmentFault · Triton 实现 FlashAttention2](https://segmentfault.com/a/1190000047406258)
+- ⭐⭐⭐ BBuf《OpenAI Triton 入门笔记一/二/三》— [微信公众号系列 2024](https://github.com/BBuf/how-to-optim-algorithm-in-cuda) — Triton 入门最佳中文资料
+- ⭐⭐ Triton 官方教程 — [triton-lang.org](https://triton-lang.org/main/getting-started/tutorials/) — 官方 6 个 tutorial（vector add → softmax → matmul → fused attention）
 
-### FlashAttention 论文 + 中文图解
+### FlashAttention（**M2 W8 主菜**）
 
-- 📝 [图解 FlashAttention V1](https://zhuanlan.zhihu.com/p/669926191)
-- 📝 [图解 FlashAttention V2](https://mp.weixin.qq.com/s/5K6yNj23NmNLcAQofHcT4Q)
+- ⭐⭐⭐ 猛猿《图解大模型计算加速系列：FlashAttention V1，从硬件到计算逻辑》— [知乎 2023.11](https://zhuanlan.zhihu.com/p/669926191) — **BBuf 在自己 Triton 笔记里反复推荐**，中文圈 FA1 解读最权威
+- ⭐⭐⭐ 猛猿《图解大模型计算加速系列：Flash Attention V2，从原理到并行计算》— [微信公众号 2023.7](https://mp.weixin.qq.com/s/5K6yNj23NmNLcAQofHcT4Q) — 同作者，FA2 配套
+- ⭐⭐ 《FlashAttention 算法之美：极简推导版》— [微信公众号](https://mp.weixin.qq.com/s/hu5D1dmCFkeStxbXBE-czA) — 简化版，适合入门第一遍
+- ⭐⭐ Zihao Ye《From Online Softmax to FlashAttention》（英文）— FlashInfer 作者写的完整推导，进阶必读
 
 ---
 
 ## 3. vLLM / SGLang 推理框架（M3-M4 用）
 
-### vLLM 源码地图
+### vLLM 源码地图（**M3 主菜**）
 
-- 📝 [quant67 大模型基础设施工程系列 · PagedAttention 与 Continuous Batching](https://quant67.com/post/llm-infra/12-paged-continuous/12-paged-continuous.html)
-- 📝 [Smarter's blog · vLLM 系统拆解 · 七层结构](https://smarter.xin/posts/354d88e4/)
-- 📝 [vLLM 底层 PagedAttention 与 Continuous Batching 解释（带源码片段）](https://jishuzhan.net/article/2045034961988812802)
-- 📚 vLLM 官方 [Architecture Overview](https://docs.vllm.ai/en/latest/design/arch_overview.html)
+- ⭐⭐⭐ Smarter《vLLM 系统拆解》系列 — [smarter.xin 2025.10-11 持续更新](https://smarter.xin/posts/354d88e4/) — **七层结构图是教科书级**，按 vLLM 官方架构文档对齐，面试问到某个能力落在哪层时直接能答
+- ⭐⭐⭐ shijuzhao《vLLM V1: 大模型推理系统的教科书》— [shijuzhao.github.io 2025.2](https://shijuzhao.github.io/vllm-v1) — **基于 v1 0.7.3 版本逐行代码解读，最完整的 V1 中文资料**
+- ⭐⭐⭐ 猛猿《图解大模型计算加速系列：vLLM 源码解析 1-N，整体架构》— [微信公众号系列 2024](https://mp.weixin.qq.com/s/r_t6_zMvPT7za82MZX4oRA) — 多篇连载，强调"图解 + 整体架构"
+- ⭐⭐ "Inside vLLM: Anatomy of a High-Throughput LLM Inference System" 中文版 — [知乎 2025](https://zhuanlan.zhihu.com/p/2021773453523522489) — 翻译自 vLLM 官方博客
+
+### vLLM 原理 + 调优
+
+- ⭐⭐ quant67《大模型基础设施工程》系列 — [quant67.com 2025](https://quant67.com/post/llm-infra/12-paged-continuous/12-paged-continuous.html) — 从 PagedAttention 到 vLLM v1 全覆盖，含调参手册
 
 ### B 站源码课
 
 - 搜 "vLLM 源码全流程分析"（lyrry1997 系列，带飞书课件）
-- 搜 "AI INFRA 学习 LLM 全景图"
 - 搜 "vLLM 大模型推理框架 分块显存管理"
 
-### SGLang vs vLLM 横向对比
+### SGLang vs vLLM 横向对比（M4 用）
 
-- 📝 [SGLang vs vLLM 2026 深度对比](https://chenxutan.com/d/1513.html)
-- 📝 [网硕互联 · SGLang vs vLLM 核心差异](https://www.wsisp.com/helps/53774.html)
+- ⭐⭐⭐ SGLang 官方 RadixAttention 文档 — [docs.sglang.io](https://mintlify.com/sgl-project/sglang/concepts/radix-attention) — 含 `radix_cache.py` 关键源码片段
+- ⭐⭐⭐ LMSYS 官方博客《Fast and Expressive LLM Inference with RadixAttention and SGLang》— [lmsys.org 2024.1](https://lmsys.org/blog/2024-01-17-sglang/) — 原作者团队解读
+- ⭐⭐《RadixAttention 技术详解：从原理到 SGLang 实践及 vLLM APC 对比》— [华为昇腾开源专区 2026.3](https://ascendai.csdn.net/69c390dd54b52172bc642216.html) — 含 SGLang 源码 + 与 vLLM Automatic Prefix Caching 对比
 
 ### 工程优化武器库（M4 用）
 
-- 投机采样：搜 "投机采样综述 中文" "Medusa EAGLE MTP"
-- 量化：搜 "AWQ 论文解读 中文" "FP8 训练 DeepSeek"
-- TritonServer：[CUDA 编程基础与 Triton 模型部署](https://mp.weixin.qq.com/s/mXwJAAyYanmmWqLgK0FZNg)
+- 投机采样：搜 "投机采样综述 中文"、"Medusa EAGLE MTP 对比"
+- 量化：搜 "AWQ 论文解读 中文"、"FP8 训练 DeepSeek"
 
 ---
 
-## 4. 分布式并行 + 训练框架（M5 上半 用）
+## 4. KV Cache 存储 / Mooncake / PD 分离（M4 主菜补充）
+
+### Mooncake（**论文一作章明星本人写的解读，权威性 100%**）
+
+- ⭐⭐⭐ 章明星《Mooncake (1)：在月之暗面做月饼，Kimi 以 KVCache 为中心的分离式推理架构》— [清华助理教授 + 月之暗面 KVCache.AI 团队负责人 / 2024.6](https://www.163.com/dy/article/J64853CG055689ZC.html) — 含原论文未提的 design choice 思考
+- ⭐⭐ 《对话清华章明星、月之暗面许欣然：Mooncake 架构背后》— [硅星人 ACC 2024.11](https://view.inews.qq.com/a/20241121A02FF200) — 用"备菜/炒菜"类比讲清 PD 分离
+
+### Mooncake 论文解读（社区版，仅作补充）
+
+- ⭐⭐《Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving 阅读笔记》— [掘金 2025](https://juejin.cn/post/7510051346306105394) — 含调度算法和实验结果详细解析
+
+### LMCache + 多级 KV cache
+
+- LMCache 官方文档 — [docs.lmcache.ai](https://docs.lmcache.ai/developer_guide/architecture.html) — 含 GPU/CPU/Disk/Remote 四级架构图
+
+---
+
+## 5. 分布式并行 + 训练框架（M5 上半 用）
 
 ### Megatron 5 大并行
 
-- 📝 [Megatron-LM 深度解析 · 5 大并行策略](https://adg.csdn.net/6952548a5b9f5f31781b8f89.html)
-- 📝 [MLTalks · 详解 Megatron Pipeline Parallel](https://www.mltalks.com/posts/3278488319/)
-- 📝 [幻方 · 模型并行 Megatron 调优实验](https://www.high-flyer.cn/en/blog/model_parallel-1/inidex/)
-- 📝 [Transformer 巨型模型训练核心技术 · Megatron-LM](https://blog.csdn.net/qq_22409661/article/details/145790287)
+- ⭐⭐ [Megatron-LM 深度解析 5 大并行](https://adg.csdn.net/6952548a5b9f5f31781b8f89.html) — 火山引擎 ADG 社区
+- ⭐⭐ [MLTalks 详解 Megatron Pipeline Parallel](https://www.mltalks.com/posts/3278488319/) — GPipe / PipeDream / 1F1B / Interleaved 演进
+- ⭐⭐ [幻方 · 模型并行 · Megatron 调优实验](https://www.high-flyer.cn/en/blog/model_parallel-1/inidex/) — 幻方 AI 实测数据
+- 视频：B 站搜 "Megatron-LM 5 大并行策略"
 
 ### Muon 优化器（DeepSeek V4 已采用）
 
-- 搜 "Muon 优化器解读"
-- 搜 "Newton-Schulz 迭代 大模型训练"
-- 搜 "Kimi Muon 论文"
+- 搜 "Muon 优化器解读"、"Newton-Schulz 迭代 大模型训练"、"Kimi Muon 论文"
 
 ---
 
-## 5. 2026 最新架构（M5 下半 用 · 必修）
+## 6. 2026 最新架构（M5 下半 用 · 必修）
 
 ### DeepSeek 系（压缩稀疏全注意力路线）
 
 #### V3 / V3.2-Exp（必修前置）
 
-- 📝 [52nlp · DeepSeek-V3.2-Exp 用稀疏注意力实现高效长上下文](https://www.52nlp.cn/deepseek-v3-2-exp%ef%bc%9a%e7%94%a8%e7%a8%80%e7%96%8f%e6%b3%a8%e6%84%8f%e5%8a%9b%e5%ae%9e%e7%8e%b0%e6%9b%b4%e9%ab%98%e6%95%88%e7%9a%84%e9%95%bf%e4%b8%8a%e4%b8%8b%e6%96%87%e6%8e%a8%e7%90%86)
-- 📝 [机器之心 · DSA 公开解读](https://mp.weixin.qq.com/s/WYze9rEZnuZ9l1Y132VJmA)
-- 📝 [CSDN · DSA 算法源码分析](https://deepseek.csdn.net/69f0799e54b52172bc7087e5.html)
+- ⭐⭐⭐ DeepSeek-V3 / V3.2-Exp 官方技术报告 PDF（HuggingFace 仓库）
+- ⭐⭐ [52nlp · DeepSeek-V3.2-Exp 用稀疏注意力实现高效长上下文](https://www.52nlp.cn/deepseek-v3-2-exp%ef%bc%9a%e7%94%a8%e7%a8%80%e7%96%8f%e6%b3%a8%e6%84%8f%e5%8a%9b%e5%ae%9e%e7%8e%b0%e6%9b%b4%e9%ab%98%e6%95%88%e7%9a%84%e9%95%bf%e4%b8%8a%e4%b8%8b%e6%96%87%e6%8e%a8%e7%90%86)
+- ⭐⭐ [机器之心 · DSA 公开解读](https://mp.weixin.qq.com/s/WYze9rEZnuZ9l1Y132VJmA)
+- ⭐⭐ [CSDN · DSA 算法源码分析](https://deepseek.csdn.net/69f0799e54b52172bc7087e5.html)
 - 📦 [deepseek-ai/DeepSeek-V3.2-Exp](https://github.com/deepseek-ai/DeepSeek-V3.2-Exp)
 
 #### V4（2026.4.24，必修）
 
-- 📝 [量子位 · V4 报告太详尽了 · 484 天换代之路](https://www.163.com/dy/article/KRBULUJ60511DSSR.html)
-- 📝 [CSDN · DeepSeek-V4 技术报告全解读 · 从架构到 Infra](https://deepseek.csdn.net/69f040bc0a2f6a37c5a685c2.html)
-- 📝 [掘金 · V4 简要解读 · 含详细参数对比表](https://juejin.cn/post/7631898635937497134)
-- 📦 [HuggingFace · deepseek-ai/DeepSeek-V4](https://huggingface.co/collections/deepseek-ai/deepseek-v4)
+- ⭐⭐⭐ DeepSeek-V4 官方技术报告 PDF（HuggingFace `deepseek-ai/DeepSeek-V4` 仓库）
+- ⭐⭐⭐ [SGLang 官方 cookbook · DeepSeek-V4](https://docs.sglang.io/cookbook/autoregressive/DeepSeek/DeepSeek-V4) — Day-0 部署文档，含完整启动命令和硬件要求
+- ⭐⭐⭐ [LMSYS 博客 · DeepSeek-V4 on Day 0: From Fast Inference to Verified RL with SGLang and Miles](https://www.lmsys.org/blog/2026-04-25-deepseek-v4/) — SGLang 团队对 V4 hybrid attention + mHC + Muon 的深度技术解读
+- ⭐⭐ [量子位 · V4 报告太详尽了 · 484 天换代之路](https://www.163.com/dy/article/KRBULUJ60511DSSR.html)
+- ⭐⭐ [CSDN · DeepSeek-V4 技术报告全解读](https://deepseek.csdn.net/69f040bc0a2f6a37c5a685c2.html)
+- ⭐⭐ [掘金 · V4 简要解读 · 含详细参数对比表](https://juejin.cn/post/7631898635937497134)
 
 ### Qwen / Kimi 系（门控线性混合路线）
 
 #### Qwen3 / Qwen3-Next（前置）
 
-- 📝 [Qwen3 技术报告详解](https://blog.csdn.net/kebijuelun/article/details/148070438)
-- 📝 [Qwen3 技术报告解读](https://mp.weixin.qq.com/s/4Qz5CB4Upns6rW2jDSJ6gA)
+- ⭐⭐ [Qwen3 技术报告详解](https://blog.csdn.net/kebijuelun/article/details/148070438)
+- ⭐⭐ [Qwen3 技术报告解读](https://mp.weixin.qq.com/s/4Qz5CB4Upns6rW2jDSJ6gA)
 
-#### Qwen3.6-35B-A3B（2026.4.16，必修）
+#### Qwen3.6-35B-A3B / Qwen3.6-27B（2026.4.16，必修）
 
-- 📝 [博客园 · Qwen3.6-35B-A3B 全面评测](https://www.cnblogs.com/sing1ee/p/19885253)
-- 📝 [Qwen3.5/3.6 混合注意力解析 · Gated DeltaNet + MoE 部署](https://dev.tekin.cn/blog/qwen3-5-hybrid-attention-gated-deltanet-moe-deployment)
-- 📦 [Qwen 官方博客](https://qwen.ai/blog?id=qwen3.6-35b-a3b)
-- 📦 HuggingFace `Qwen/Qwen3.6-35B-A3B`
+- ⭐⭐⭐ [SGLang 官方 cookbook · Qwen3.6](https://cookbook.sglang.io/autoregressive/Qwen/Qwen3.6) — Day-0 部署文档，含 Mamba Radix Cache 等 hybrid 模型特有调度策略
+- ⭐⭐⭐ [HuggingFace · Qwen/Qwen3.6-35B-A3B](https://huggingface.co/Qwen/Qwen3.6-35B-A3B) — 模型卡 + 官方部署命令（vLLM ≥ 0.19.0 / SGLang ≥ 0.5.10）
+- ⭐⭐ [博客园 · Qwen3.6-35B-A3B 全面评测](https://www.cnblogs.com/sing1ee/p/19885253)
+- ⭐⭐ [Qwen3.5/3.6 混合注意力解析 · Gated DeltaNet + MoE 部署](https://dev.tekin.cn/blog/qwen3-5-hybrid-attention-gated-deltanet-moe-deployment)
 
-#### Kimi K2 Thinking & MiniMax M2
+#### Kimi K2 Thinking / Kimi Linear / MiniMax M2
 
-- 📝 [LLM 架构新趋势 · Kimi K2 Thinking 和 MiniMax-M2 之后](https://devpress.csdn.net/v1/article/detail/154573876)
-- 📝 [开源推理模型巅峰对决 · Kimi K2 Thinking vs MiniMax M2](https://blog.gitcode.com/f044616c21b80a6f28db2249be988908.html)
-- 📝 [Kimi K2 Thinking vs MiniMax M2 全面对比](https://kimi-k2.org/zh/blog/17-kimi-k2-thinking-vs-minimax-m2)
+- ⭐⭐⭐ [LLM 架构新趋势 · Kimi K2 Thinking 和 MiniMax-M2 之后是什么](https://devpress.csdn.net/v1/article/detail/154573876) — **必读综述**，把"线性 attention vs 全注意力"博弈讲清楚
+- ⭐⭐ [开源推理模型巅峰对决 · Kimi K2 Thinking vs MiniMax M2](https://blog.gitcode.com/f044616c21b80a6f28db2249be988908.html)
+- ⭐⭐ [Kimi K2 Thinking vs MiniMax M2 全面对比](https://kimi-k2.org/zh/blog/17-kimi-k2-thinking-vs-minimax-m2)
 
 ---
 
-## 6. RL 训推一体（M6 上半 用）
+## 7. RL 训推一体（M6 上半 用）
 
-### R1 复现教程（最佳入门）
+### 视觉化教学（**先看这个建立直觉**）
 
-- 📝 [Datawhale R1 中文复现教程](https://cloud.tencent.com/developer/article/2494040)（3×A800 跑通 GRPO，420 元）
-- 📝 [HuggingFace · Mini-R1 复现 DeepSeek R1 灵光一现](https://hugging-face.cn/blog/open-r1/mini-r1-contdown-game)
-- 📝 [Open-R1 · DeepSeek R1 复现项目代码详解](http://152.67.113.27/articles/OpenR1...)
+- ⭐⭐⭐ changyeyu/LLM-RL-Visualized — [GitHub](https://github.com/changyeyu/LLM-RL-Visualized) — 100+ 原创架构图覆盖 LLM/VLM/RL/PPO/GRPO/DPO，作者出版了豆瓣高分书《大模型算法：强化学习、微调与对齐》，权威性极高
 
-### 框架
+### R1 复现教程（最佳入门实战）
 
-- 📦 [OpenRLHF README 中文版](https://github.com/OpenRLHF/OpenRLHF/blob/main/README_zh.md)
-- 📦 字节 veRL · `volcengine/verl`
-- 📦 HuggingFace TRL · `huggingface/trl`
+- ⭐⭐⭐ [Datawhale R1 中文复现教程](https://cloud.tencent.com/developer/article/2494040) — 3×A800 跑通 GRPO，约 420 元
+- ⭐⭐ [HuggingFace · Mini-R1 复现 DeepSeek R1 灵光一现](https://hugging-face.cn/blog/open-r1/mini-r1-contdown-game)
 
 ### 算法解读
 
-- 📝 [柠檬 CC · RLHF 实战系列](https://www.limoncc.com/post/47f9ae3708f426c0/)（PPO/GRPO/REINFORCE++）
+- ⭐⭐⭐ 《大模型后训练中的 GRPO 算法剖析》— [知乎 2025](https://zhuanlan.zhihu.com/p/2020218462119679502) — 从"为什么 LLM 后训练适合 GRPO"角度讲清楚 PPO → GRPO 演进
+- ⭐⭐ [柠檬 CC · RLHF 实战系列](https://www.limoncc.com/post/47f9ae3708f426c0/) — PPO/GRPO/REINFORCE++ 公式推导
+
+### 框架
+
+- ⭐⭐⭐ [OpenRLHF README 中文版](https://github.com/OpenRLHF/OpenRLHF/blob/main/README_zh.md) — Ray + vLLM + DeepSpeed 工业级 RL 框架
+- 📦 字节 veRL · `volcengine/verl`
+- 📦 HuggingFace TRL · `huggingface/trl`
 
 ---
 
-## 7. ViT / 多模态 / DiT（M6 中段 用）
+## 8. ViT / 多模态 / DiT（M6 中段 用）
 
 ### Qwen2.5-VL
 
-- 📝 [博客园 · Qwen2.5-VL 技术报告精读](https://www.cnblogs.com/emergence/p/18873748)
-- 📝 [Qwen2.5-VL 算法解析](https://jishuzhan.net/article/2045498484711817217)
-- 📝 [《Qwen2.5-VL》论文精读笔记](https://www.wsisp.com/helps/55456.html)
+- ⭐⭐ [博客园 · Qwen2.5-VL 技术报告精读](https://www.cnblogs.com/emergence/p/18873748)
+- ⭐⭐ [Qwen2.5-VL 算法解析](https://jishuzhan.net/article/2045498484711817217)
+- ⭐⭐ [《Qwen2.5-VL》论文精读笔记](https://www.wsisp.com/helps/55456.html)
 
 ### InternVL
 
-- 📝 [InternVL-2.5 训练细节](https://devpress.csdn.net/v1/article/detail/144970962)
+- ⭐⭐ [InternVL-2.5 训练细节](https://devpress.csdn.net/v1/article/detail/144970962) — 动态分辨率切片
 
 ### DiT
 
-- 搜知乎 "DiT 详解"
+- 论文：Scalable Diffusion Models with Transformers
+- 知乎搜 "DiT 详解"
 
 ---
 
-## 8. 面试八股（M6 末段 用）
+## 9. 面试八股（M6 末段 用）
 
-- 📚 [小林 coding · 530+ 大模型面试题](https://xiaolincoding.com/other/ai.html)
-- 📝 [字节大模型一面真题](https://blog.csdn.net/2401_84033492/article/details/141093004)
-- 📝 [字节大模型一二三面经](https://www.nowcoder.com/feed/main/detail/ef14567a048e4e3fa30cbe28eb5c59e3)
-- 📝 [入职字节大模型岗面试分享](https://devpress.csdn.net/v1/article/detail/147386717)
+- ⭐⭐⭐ [小林 coding · 530+ 大模型面试题](https://xiaolincoding.com/other/ai.html)
+- ⭐⭐ [字节大模型一面真题](https://blog.csdn.net/2401_84033492/article/details/141093004)
+- ⭐⭐ [字节大模型一二三面经](https://www.nowcoder.com/feed/main/detail/ef14567a048e4e3fa30cbe28eb5c59e3)
+- ⭐⭐ [入职字节大模型岗面试分享](https://devpress.csdn.net/v1/article/detail/147386717)
 - LeetCode hot 100
 
 ---
 
-## 9. 我额外推荐你订阅的内容（每天/每周打开）
+## 附录 A · 两大 SOTA 资源库（持续向下挖）
 
-### 公众号 / 知乎
+这两份是国内 ML Sys / 推理 infra 圈最有价值的元资源库，挂这里让你能持续发现新资料：
+
+- ⭐⭐⭐ **BBuf [`how-to-optim-algorithm-in-cuda/RESOURCES.md`](https://github.com/BBuf/how-to-optim-algorithm-in-cuda/blob/master/RESOURCES.md)** — OneFlow 工程师维护，CUDA/Triton/MLSys 资源最全索引，每月更新
+- ⭐⭐⭐ **[`zhaochenyang20/Awesome-ML-SYS-Tutorial`](https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial)** — SGLang 团队成员维护的 ML Sys 资源库，含 SGLang 源码深度解读
+
+## 附录 B · 我额外推荐你订阅的渠道
+
+### 公众号 / 博客（每天 / 每周打开）
 
 - **机器之心**（公众号）：每天看新模型发布
 - **量子位**（公众号）：业界动态
-- **BBuf 的 CUDA 笔记**：CUDA/Triton 实战
+- **BBuf 的 CUDA 笔记**（公众号）：CUDA/Triton 实战
+- **zartbot**（公众号）：DeepSeek/MoE/MLA 一线实战
 - **Smarter's blog**（[smarter.xin](https://smarter.xin/)）：vLLM/PMPP 系列
-- **苏剑林 / 科学空间**（[kexue.fm](https://kexue.fm)）：注意力数学原理
+- **科学空间**（[kexue.fm](https://kexue.fm)）：苏剑林，注意力数学原理
 
-### 推特/X（开 VPN 看）
+### 推特 / X（开 VPN 看）
 
-- @lvwerra（HuggingFace）
-- @woosuk_k（vLLM）
+- @lvwerra（HuggingFace TRL 作者）
+- @woosuk_k（vLLM 主创）
 - @teknium1
 - @karpathy
 
 ### GitHub Trending
 
 - 每周看一次 `Trending Python / C++ / CUDA`，找新出的推理优化项目
+
+---
+
+## 附录 C · 已剔除清单（避免共创同学重复加）
+
+下面这些大热文章被我们剔除了，原因如下，如果你有反对意见可以 PR 讨论：
+
+| 文章 / 来源 | 剔除原因 |
+|---|---|
+| 借一步网《缓存与效果的极限拉扯》 | 纯转载苏剑林 kexue.fm 原文，无附加价值 |
+| 冷眸《Attention 各种变体》 | 内容混合多家观点但无独立洞察 |
+| U 深研《国内大模型厂商混合注意力机制》 | 偏新闻聚合性质，技术深度不够 |
+| 53AI《大模型推理框架 vLLM 源码解析》 | 与猛猿原文重合度极高，二手转载 |
+| 一些匿名公众号"翻译版" / "速读版" FA 文章 | 来源不可考，公式有误的概率高，建议直接读猛猿原版 |
+
+## 附录 D · 加新条目时请遵守的格式
+
+```
+- ⭐⭐⭐ 标题 — [作者背景, 平台 YYYY.MM](URL) — 一句话价值说明（必须）
+                ↑                              ↑
+        让读者判断权威度                让读者知道为什么收
+```
+
+新人贡献流程：在你的个人分支加资源，发 PR 到 main 时附理由（作者是谁、为什么列入、星级依据）。如果 reviewer 觉得不达标，会请你降级或剔除，不要难过 —— 是为了保护清单的信噪比。
