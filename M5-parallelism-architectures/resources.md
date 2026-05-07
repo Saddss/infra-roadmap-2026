@@ -12,10 +12,22 @@
 - ⭐⭐ [Transformer 巨型模型训练核心技术 · Megatron-LM](https://blog.csdn.net/qq_22409661/article/details/145790287)
 - 视频：B 站搜 "Megatron-LM 5 大并行策略"
 
-### 训练框架
+### 训练框架横向对比（**FSDP vs DeepSpeed vs Megatron**）
 
-- DeepSpeed ZeRO 论文
-- FSDP 官方文档（PyTorch）
+> 完整对比 + 选型建议见笔记 [`w17-w18-parallelism/notes/08-fsdp-deepspeed-megatron.md`](./w17-w18-parallelism/notes/08-fsdp-deepspeed-megatron.md)
+
+- ⭐⭐⭐ **[quant67 · Megatron-LM 与 DeepSpeed](https://quant67.com/post/llm-infra/07-megatron-deepspeed/07-megatron-deepspeed.html)** — [土法炼钢兴趣小组] — **最完整的中文对比**，含三流派演进历史和规模选型建议
+- ⭐⭐⭐ **[HuggingFace · 从 DeepSpeed 到 FSDP 再回到 Accelerate](https://huggingface.co/blog/zh/deepspeed-to-fsdp-and-back)** — HF 官方实战，含 DeepSpeed 强制 FP32 优化器 vs FSDP 默认精度的差异分析
+- ⭐⭐ [HuggingFace · FSDP vs DeepSpeed 概念指南](https://hugging-face.cn/docs/accelerate/concept_guides/fsdp_and_deepspeed)
+- ⭐⭐ [大模型并行训练指南：通俗理解 Megatron-DeepSpeed](https://blog.csdn.net/v_JULY_v/article/details/132462452) — v_JULY_v 长文
+- ⭐⭐ [Distributed Training: DeepSpeed ZeRO 1/2/3 + Accelerate, Megatron-LM](https://www.cnblogs.com/forhheart/p/18401234)
+
+#### 论文
+
+- ⭐⭐⭐ ZeRO: Memory Optimizations Toward Training Trillion Parameter Models (SC'20)
+- ⭐⭐⭐ Megatron-LM (arXiv:1909.08053)
+- ⭐⭐⭐ Megatron-LM 2 (arXiv:2104.04473) — 3D 并行
+- ⭐⭐⭐ PyTorch FSDP (VLDB'24)
 
 ### Muon 优化器（V4 已采用，2026 新八股）
 

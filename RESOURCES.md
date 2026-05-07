@@ -121,33 +121,79 @@
 
 ---
 
-## 4. KV Cache 存储 / Mooncake / PD 分离（M4 主菜补充）
+## 4. 推理系统架构 · PD/AF/EP 分离 + KV cache 存储 + Kernel 库（**横跨 M3-M5 的纵向主题**）
 
-### Mooncake（**论文一作章明星本人写的解读，权威性 100%**）
+> 完整深度专题见 [`M4-inference-frameworks/w16-disaggregated-prefill/notes-deep.md`](./M4-inference-frameworks/w16-disaggregated-prefill/notes-deep.md)
+> 这一节涵盖 PD 分离、AF 分离、大 EP/EPLB、xPyD 弹性 PD、FlashInfer 等 2025-2026 推理 infra 最热的系统级方向。
+
+### 4.1 PD 分离 · Mooncake（**论文一作章明星本人写的解读**）
 
 - ⭐⭐⭐ 章明星《Mooncake (1)：在月之暗面做月饼，Kimi 以 KVCache 为中心的分离式推理架构》— [清华助理教授 + 月之暗面 KVCache.AI 团队负责人 / 2024.6](https://www.163.com/dy/article/J64853CG055689ZC.html) — 含原论文未提的 design choice 思考
 - ⭐⭐ 《对话清华章明星、月之暗面许欣然：Mooncake 架构背后》— [硅星人 ACC 2024.11](https://view.inews.qq.com/a/20241121A02FF200) — 用"备菜/炒菜"类比讲清 PD 分离
+- ⭐⭐《Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving 阅读笔记》— [掘金 2025](https://juejin.cn/post/7510051346306105394) — 调度算法详解
+- ⭐⭐⭐ Mooncake 论文 [arXiv:2407.00079](https://arxiv.org/abs/2407.00079)
 
-### Mooncake 论文解读（社区版，仅作补充）
+### 4.2 xPyD 弹性 PD（**2026 主流落地**）
 
-- ⭐⭐《Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving 阅读笔记》— [掘金 2025](https://juejin.cn/post/7510051346306105394) — 含调度算法和实验结果详细解析
+- ⭐⭐⭐ [vLLM PR #18242 · xPyD based on P2P NCCL](https://github.com/vllm-project/vllm/pull/18242) — vLLM xPyD 核心实现
+- ⭐⭐⭐ [vLLM PR #12957 · XpYd with MooncakeStore](https://github.com/vllm-project/vllm/pull/12957) — Mooncake backend
+- ⭐⭐⭐ [SGLang PD Disaggregation 官方文档（中文）](https://docs.sglang.com.cn/advanced_features/pd_disaggregation.html) — 完整启动命令
+- ⭐⭐ [SGLang Issue #9442 · xPyD 配置示例](https://github.com/sgl-project/sglang/issues/9442)
 
-### LMCache + 多级 KV cache
+### 4.3 AF 分离（Attention/FFN Disaggregation）—— **2026 新方向**
 
-- LMCache 官方文档 — [docs.lmcache.ai](https://docs.lmcache.ai/developer_guide/architecture.html) — 含 GPU/CPU/Disk/Remote 四级架构图
+- ⭐⭐⭐ **MegaScale-Infer (字节跳动, arXiv:2504.02263)** — 为 MoE 提供 AF 分离 + Ping-pong 流水线 + M2N 通信，**+1.90× 吞吐**
+- ⭐⭐⭐ [Theoretically Optimal A/F Ratios (arXiv:2601.21351)](https://arxiv.org/html/2601.21351v1) — 理论最优 A/F 比例分析
+- ⭐⭐⭐ [百度 AFD 死区分析 (arXiv:2602.09721)](https://arxiv.org/pdf/2602.09721) — "死区"现象 + AFD vs EP 对比
+- ⭐⭐⭐ [vLLM RFC #22799 · ATTN-FFN Disaggregation for MoE Models](https://github.com/vllm-project/vllm/issues/22799) — **2025.8 启动，2026 重点跟踪**
+
+### 4.4 大 EP / EPLB（**MoE 推理标配**）
+
+- ⭐⭐⭐ [DeepSeek EPLB GitHub](https://github.com/deepseek-ai/EPLB) — DeepSeek 开源 Expert Parallelism Load Balancer
+- ⭐⭐⭐ [腾讯云 · EP 架构：DeepSeek 突破性实践背后](https://cloud.tencent.com.cn/developer/article/2504080) — EP 终极形态之争
+- ⭐⭐⭐ [腾讯云 · 如何重现 DeepSeek 推理性能突破](https://cloud.tencent.com/developer/article/2523038) — RTP-LLM 阿里云灵骏实测：Prefill 42.6K TPS / Decode 14.7K TPS
+- ⭐⭐ [阿里云 · DeepSeek EPLB 冗余专家策略](https://developer.aliyun.com/article/1654261)
+
+### 4.5 LMCache + 多级 KV cache
+
+- ⭐⭐⭐ [LMCache 官方文档 · Architecture](https://docs.lmcache.ai/developer_guide/architecture.html) — GPU/CPU/Disk/Remote 四级架构图
+- ⭐⭐ [LMCache CPU RAM 配置](https://docs.lmcache.ai/kv_cache/cpu_ram.html)
+- ⭐⭐ [LMCache + Mooncake 集成](https://docs.lmcache.ai/kv_cache/storage_backends/mooncake.html)
+
+### 4.6 FlashInfer · 推理 attention kernel 标杆库
+
+- ⭐⭐⭐ [flashinfer-ai/flashinfer GitHub](https://github.com/flashinfer-ai/flashinfer) — Zihao Ye（FA 论文作者）维护
+- ⭐⭐ [FlashInfer 源码级解读](https://www.yeyulingfeng.com/534685.html) — 中文源码导读
+- 关键能力：稀疏注意力 90% 带宽 + JIT 自定义 + PageAttention + Top-K 采样 kernel
+- 用途：vLLM v1 默认 backend、SGLang `fa3` backend、DeepSeek V4 SGLang 部署 backbone
 
 ---
 
 ## 5. 分布式并行 + 训练框架（M5 上半 用）
 
-### Megatron 5 大并行
+### 5.1 Megatron 5 大并行
 
 - ⭐⭐ [Megatron-LM 深度解析 5 大并行](https://adg.csdn.net/6952548a5b9f5f31781b8f89.html) — 火山引擎 ADG 社区
 - ⭐⭐ [MLTalks 详解 Megatron Pipeline Parallel](https://www.mltalks.com/posts/3278488319/) — GPipe / PipeDream / 1F1B / Interleaved 演进
 - ⭐⭐ [幻方 · 模型并行 · Megatron 调优实验](https://www.high-flyer.cn/en/blog/model_parallel-1/inidex/) — 幻方 AI 实测数据
 - 视频：B 站搜 "Megatron-LM 5 大并行策略"
 
-### Muon 优化器（DeepSeek V4 已采用）
+### 5.2 三大训练框架横向对比（**FSDP vs DeepSpeed vs Megatron**）
+
+> 完整选型决策树见 [`M5/w17-w18-parallelism/notes/08-fsdp-deepspeed-megatron.md`](./M5-parallelism-architectures/w17-w18-parallelism/notes/08-fsdp-deepspeed-megatron.md)
+
+- ⭐⭐⭐ **[quant67 · Megatron-LM 与 DeepSpeed](https://quant67.com/post/llm-infra/07-megatron-deepspeed/07-megatron-deepspeed.html)** — **最完整的中文对比**，含三流派演进历史 + 规模选型表
+- ⭐⭐⭐ **[HuggingFace · 从 DeepSpeed 到 FSDP 再回到 Accelerate](https://huggingface.co/blog/zh/deepspeed-to-fsdp-and-back)** — HF 官方实战，含 DeepSpeed 强制 FP32 vs FSDP 默认精度的关键差异
+- ⭐⭐ [HuggingFace · FSDP vs DeepSpeed 概念指南](https://hugging-face.cn/docs/accelerate/concept_guides/fsdp_and_deepspeed)
+- ⭐⭐ [大模型并行训练指南：通俗理解 Megatron-DeepSpeed](https://blog.csdn.net/v_JULY_v/article/details/132462452) — v_JULY_v 长文
+
+#### 论文
+
+- ⭐⭐⭐ ZeRO: Memory Optimizations Toward Training Trillion Parameter Models (SC'20)
+- ⭐⭐⭐ Megatron-LM (arXiv:1909.08053) + Megatron-LM 2 (arXiv:2104.04473) — 3D 并行
+- ⭐⭐⭐ PyTorch FSDP (VLDB'24)
+
+### 5.3 Muon 优化器（DeepSeek V4 已采用）
 
 - 搜 "Muon 优化器解读"、"Newton-Schulz 迭代 大模型训练"、"Kimi Muon 论文"
 

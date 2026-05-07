@@ -13,6 +13,7 @@
 - [ ] `notes/05-expert-parallel.md` — EP 给 MoE
 - [ ] `notes/06-sequence-parallel.md` — SP 减激活内存
 - [ ] `notes/07-muon-optimizer.md` — Muon 优化器（V4 用）
+- [ ] `notes/08-fsdp-deepspeed-megatron.md` — **三大训练框架横向对比**（FSDP vs DeepSpeed ZeRO vs Megatron-Core），含规模选型建议
 
 ## 必交脚本
 

@@ -82,11 +82,51 @@
 - vLLM 的 `--kv-cache-dtype int4` / `fp8_e5m2`
 - 搜 "INT4 KV Cache 实现"
 
-## Disaggregated Prefill / Multi-LoRA
+## Disaggregated Prefill / xPyD 弹性 PD
 
-- vLLM `kv_connector` 接口
-- 搜 "vLLM disaggregated prefill 设计"
-- vLLM Multi-LoRA: `vllm/lora/`
+> 完整深度专题见 [`w16-disaggregated-prefill/notes-deep.md`](./w16-disaggregated-prefill/notes-deep.md)
+
+### 核心 PR / RFC（2025-2026）
+
+- ⭐⭐⭐ [vLLM PR #18242 · An native implementation of xPyD based on P2P NCCL](https://github.com/vllm-project/vllm/pull/18242) — vLLM xPyD 核心实现
+- ⭐⭐⭐ [vLLM PR #12957 · Support XpYd disaggregated prefill with MooncakeStore](https://github.com/vllm-project/vllm/pull/12957) — Mooncake backend
+- ⭐⭐⭐ [vLLM RFC #22799 · ATTN-FFN Disaggregation for MoE Models](https://github.com/vllm-project/vllm/issues/22799) — **2025.8 启动的 AF 分离 RFC，2026 重点跟踪**
+- ⭐⭐⭐ [SGLang PD Disaggregation 官方文档（中文）](https://docs.sglang.com.cn/advanced_features/pd_disaggregation.html) — 含完整启动命令
+- ⭐⭐ [SGLang Issue #9442 · Configuration of xPyD](https://github.com/sgl-project/sglang/issues/9442) — 配置示例
+- ⭐⭐ [SGLang PR #18163 · improve kv offset calculation for MHA model with different tp size](https://github.com/sgl-project/sglang/pull/18163) — 实测 TTFT 优化案例
+
+### Multi-LoRA
+
+- vLLM `vllm/lora/` 目录
+- `vllm serve --enable-lora --lora-modules ...`
+
+## AF 分离（Attention-FFN Disaggregation）—— **2026 新方向**
+
+- ⭐⭐⭐ **MegaScale-Infer (字节跳动, arXiv:2504.02263)** — [PDF](https://arxiv.org/pdf/2504.02263v2)
+  - 为 MoE 模型提供 attention 和 FFN 分离的并行化策略
+  - Ping-pong 流水线 + M2N 通信库
+  - **相比 SOTA 提升 1.90× 吞吐**
+- ⭐⭐⭐ **Theoretically Optimal Attention/FFN Ratios in Disaggregated LLM Serving (arXiv:2601.21351)** — [PDF](https://arxiv.org/html/2601.21351v1)
+  - 给出 AFD 资源配置比例的可解析框架
+  - 理论最优 A/F 比例与模拟值差距 ≤10%
+- ⭐⭐⭐ **百度 AFD 死区分析 (arXiv:2602.09721)** — [PDF](https://arxiv.org/pdf/2602.09721)
+  - "死区"现象：标准集群上增加 FFN 实例数无法改进 FLOPS 利用率
+  - AFD 节点级离散扩展比 EP 连续 batch 调整产生更高的不平衡惩罚
+
+## 大 EP / EPLB（**MoE 推理标配**）
+
+- ⭐⭐⭐ [DeepSeek EPLB GitHub](https://github.com/deepseek-ai/EPLB) — DeepSeek 开源 Expert Parallelism Load Balancer
+- ⭐⭐⭐ [腾讯云 · EP 架构：DeepSeek 突破性实践背后](https://cloud.tencent.com.cn/developer/article/2504080) — EP 终极形态之争（**必读**）
+- ⭐⭐⭐ [腾讯云 · 如何重现 DeepSeek 推理性能突破](https://cloud.tencent.com/developer/article/2523038) — RTP-LLM 阿里云灵骏实测：Prefill 42.6K TPS / Decode 14.7K TPS
+- ⭐⭐ [阿里云 · DeepSeek EPLB 冗余专家策略](https://developer.aliyun.com/article/1654261)
+- ⭐⭐ [DeepSeek 开源 EPLB 解读](https://deepseek.csdn.net/67fce31ea5baf817cf48e159.html)
+
+## FlashInfer —— **推理 attention kernel 标杆库**
+
+- ⭐⭐⭐ [flashinfer-ai/flashinfer GitHub](https://github.com/flashinfer-ai/flashinfer) — Zihao Ye（FlashAttention "From Online Softmax to FlashAttention" 作者）维护
+- ⭐⭐ [FlashInfer 源码级解读：大模型推理的"底层引擎"是怎么炼成的](https://www.yeyulingfeng.com/534685.html)
+- 关键能力：稀疏注意力（达密集 90% 带宽）、JIT 自定义 attention、PageAttention、Top-K 采样 kernel
+- 用途：vLLM v1 默认 backend 之一、SGLang `--mm-attention-backend fa3`、DeepSeek V4 SGLang 部署 backbone
 
 ## TritonServer (NVIDIA)
 
