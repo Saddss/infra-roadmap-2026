@@ -237,6 +237,31 @@
 - 论文：Scalable Diffusion Models with Transformers
 - 知乎搜 "DiT 详解"
 
+### Omni-Modal 推理系统（**2026 上半年新热点 · 简历加分项**）
+
+> 完整阅读路线 + 面试 Q&A 见 [`M6-rl-multimodal-interview/w23-multimodal/notes/05-omni-modal-systems.md`](./M6-rl-multimodal-interview/w23-multimodal/notes/05-omni-modal-systems.md)
+> 收录这两个项目的理由：vLLM 和 SGLang 各自发布的**官方独立子项目**，专门解决"omni-modal（任意模态进任意模态出）"推理的新挑战 —— 现有 vLLM/SGLang 主项目的"单 model + 单 forward"假设不再成立。
+
+**vLLM-Omni（vllm-project 官方，4400+ star）**
+
+- ⭐⭐⭐ **[arXiv:2602.02204 · vLLM-Omni: Fully Disaggregated Serving for Any-to-Any Multimodal Models](https://arxiv.org/abs/2602.02204)** — [vLLM 团队 / arXiv 2026.2] — 论文必读，Stage 抽象 + OmniConnector + EPDG 全分离
+- ⭐⭐⭐ [vllm-project/vllm-omni](https://github.com/vllm-project/vllm-omni) — [vllm-project 官方 / 2025.11 首发, v0.18.0 (2026.3)] — 4400+ star，180+ contributors
+- ⭐⭐⭐ [Q1 2026 Roadmap RFC #1192 · Omni Connector 全分离架构](https://github.com/vllm-project/vllm-omni/issues/1192) — 是研究选题金矿
+- ⭐⭐ [Disaggregated Inference for Omni-Modality Models 设计文档](https://docs.vllm.ai/projects/vllm-omni/en/latest/design/feature/disaggregated_inference/)
+- ⭐⭐ Jimmy Song《用 vLLM-Omni 快速部署多模态推理》— [jimmysong.io 中文](https://jimmysong.io/zh/ai/vllm-omni/) — 中文部署快速上手
+
+**SGLang-Omni（sgl-project 官方）**
+
+- ⭐⭐⭐ [sgl-project/sglang-omni](https://github.com/sgl-project/sglang-omni) — [sgl-project 官方] — Inter/Intra-Disaggregation
+- ⭐⭐⭐ [RFC #16546 · SGLang-Omni Design](https://github.com/sgl-project/sglang/issues/16546) — 整体设计哲学
+- ⭐⭐⭐ [Refactoring Proposal #188](https://github.com/sgl-project/sglang-omni/issues/188) — 官方对现有架构的反思（**真实 infra 演进案例**）
+- ⭐⭐ [Qwen3-Omni Refactor #92](https://github.com/sgl-project/sglang-omni/issues/92) — FusedMoE / VisionAttention 优化
+- ⭐⭐ [Ming-Omni Support Design Spec #236](https://github.com/sgl-project/sglang-omni/issues/236) — 多 stage 管道实例
+
+**Omni 模型本身（论文）**
+
+- ⭐⭐⭐ [Qwen3-Omni Technical Report (arXiv:2509.17765)](https://arxiv.org/abs/2509.17765) — Thinker-Talker MoE 架构必读
+
 ---
 
 ## 9. 面试八股（M6 末段 用）

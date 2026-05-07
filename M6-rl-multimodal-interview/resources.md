@@ -50,6 +50,29 @@
 - 知乎搜 "DiT 详解"（建议至少 2 篇）
 - Sora 技术报告
 
+### Omni-Modal 推理系统（**2026 上半年新热点 · 简历加分项**）
+
+> 完整阅读路线 + 面试 Q&A 见 [`w23-multimodal/notes/05-omni-modal-systems.md`](./w23-multimodal/notes/05-omni-modal-systems.md)
+
+**vLLM-Omni（vllm-project 官方，4400+ star）**
+
+- ⭐⭐⭐ **[arXiv:2602.02204 · vLLM-Omni: Fully Disaggregated Serving for Any-to-Any Multimodal Models](https://arxiv.org/abs/2602.02204)** — 论文，**必读**，理解 Stage 抽象 + OmniConnector
+- ⭐⭐⭐ [vllm-project/vllm-omni](https://github.com/vllm-project/vllm-omni) — 官方仓库
+- ⭐⭐⭐ [Disaggregated Inference for Omni-Modality Models 设计文档](https://docs.vllm.ai/projects/vllm-omni/en/latest/design/feature/disaggregated_inference/)
+- ⭐⭐⭐ [Q1 2026 Roadmap RFC #1192 · Omni Connector 全分离架构](https://github.com/vllm-project/vllm-omni/issues/1192) — 看官方下半年规划，是研究选题灵感金矿
+- ⭐⭐ [Qwen2.5-Omni 部署文档](https://docs.vllm.ai/projects/vllm-omni/en/latest/user_guide/examples/offline_inference/qwen2_5_omni/) — 含 prompt 格式 + 端到端代码
+- ⭐⭐ [vLLM PR #26156 · Add support for audio in video](https://github.com/vllm-project/vllm/pull/26156) — 看官方怎么实现"video 里的 audio"
+- ⭐⭐ Jimmy Song《用 vLLM-Omni 快速部署多模态推理》— [jimmysong.io 中文](https://jimmysong.io/zh/ai/vllm-omni/) — 中文部署快速上手
+
+**SGLang-Omni（sgl-project 官方）**
+
+- ⭐⭐⭐ [sgl-project/sglang-omni](https://github.com/sgl-project/sglang-omni) — 官方仓库
+- ⭐⭐⭐ [RFC #16546 · SGLang-Omni Design](https://github.com/sgl-project/sglang/issues/16546) — 整体设计哲学（inter/intra disaggregation）
+- ⭐⭐⭐ [Refactoring Proposal #188](https://github.com/sgl-project/sglang-omni/issues/188) — 官方对现有架构的反思（**真实 infra 演进案例**）
+- ⭐⭐⭐ [Qwen3-Omni Refactor #92](https://github.com/sgl-project/sglang-omni/issues/92) — Qwen3-Omni Thinker 集成 + FusedMoE / VisionAttention 优化
+- ⭐⭐ [Ming-Omni Support Design Spec #236](https://github.com/sgl-project/sglang-omni/issues/236) — 多 stage 管道实例
+- ⭐⭐ [Qwen3-Omni Technical Report (arXiv:2509.17765)](https://arxiv.org/abs/2509.17765) — Thinker-Talker 架构论文，omni 模型必读
+
 ## 面试（W24）
 
 ### 八股库
